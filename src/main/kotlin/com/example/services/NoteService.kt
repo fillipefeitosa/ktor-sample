@@ -31,19 +31,6 @@ class NoteService(database: Database) {
     return dbQuery { Notes.select { Notes.id eq id }.map { row -> row.toNote() }.singleOrNull() }
   }
 
-  suspend fun save(note: Note): Note = dbQuery {
-    Notes.insertIgnore {
-      it[id] = note.id
-      it[title] = note.title
-      it[message] = note.message
-    }
-        .let { Note(id = it[Notes.id], title = it[Notes.title], message = it[Notes.message]) }
-  }
-
-  suspend fun delete(id: UUID) {
-    dbQuery { Notes.deleteWhere { Notes.id.eq(id) } }
-  }
-
   private fun ResultRow.toNote() =
       Note(id = this[Notes.id], title = this[Notes.title], message = this[Notes.message])
 }

@@ -11,25 +11,27 @@ import io.ktor.server.plugins.contentnegotiation.*
 import org.jetbrains.exposed.sql.Database
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-            .start(wait = true)
+        embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+                        .start(wait = true)
 }
 
 fun Application.module() {
-    // configureSerialization()
-    // configureDatabases()
-    // configureRouting()
 
-    install(ContentNegotiation) { json() }
+        // configureSerialization()
+        // configureDatabases()
+        // configureRouting()
 
-    val database =
-            Database.connect(
-                    url = "jdbc:h2:file:./database/db;MODE=MYSQL;DB_CLOSE_DELAY=-1;",
-                    user = "root",
-                    driver = "org.h2.Driver",
-                    password = ""
-            )
+        install(ContentNegotiation) { json() }
+        // test
+        val database =
+                        Database.connect(
+                                        url =
+                                                        "jdbc:h2:file:./database/db;MODE=MYSQL;DB_CLOSE_DELAY=-1;",
+                                        user = "root",
+                                        driver = "org.h2.Driver",
+                                        password = ""
+                        )
 
-    val service = NoteService(database)
-    configureNoteRouting(service)
+        val service = NoteService(database)
+        configureNoteRouting(service)
 }

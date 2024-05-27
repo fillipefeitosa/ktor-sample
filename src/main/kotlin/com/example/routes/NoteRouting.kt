@@ -1,8 +1,6 @@
 package com.example.modules
 
 import com.example.models.toNoteResponse
-import com.example.requests.NoteRequest
-import com.example.requests.toNote
 import com.example.services.NoteService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -24,22 +22,6 @@ fun Application.configureNoteRouting(service: NoteService) {
         call.respond(HttpStatusCode.OK, response)
       }
           ?: call.respond(HttpStatusCode.NotFound)
-    }
-    post("/notes") {
-      val note = call.receive<NoteRequest>().toNote()
-      val response = service.save(note).toNoteResponse()
-      call.respond(HttpStatusCode.Created, response)
-    }
-    put("/notes/{id}") {
-      val id = UUID.fromString(call.parameters["id"])
-      val note = call.receive<NoteRequest>().toNote(id)
-      val response = service.save(note).toNoteResponse()
-      call.respond(HttpStatusCode.OK, response)
-    }
-    delete("/notes/{id}") {
-      val id = UUID.fromString(call.parameters["id"])
-      service.delete(id)
-      call.respond(HttpStatusCode.OK)
     }
   }
 }
