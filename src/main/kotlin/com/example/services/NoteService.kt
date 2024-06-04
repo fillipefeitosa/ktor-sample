@@ -32,13 +32,26 @@ class NoteService(database: Database) {
   }
 
   suspend fun save(note: Note): Note = dbQuery {
-    Notes.insertIgnore {
-      it[id] = note.id
-      it[title] = note.title
-      it[message] = note.message
+    val exists = Notes.select { Notes.id eq note.id }.count() > 0
+  
+    if (exists) {
+      // Update existing note
+      Notes.update({ Notes.id eq note.id }) {
+        it[title] = note.title
+        it[message] = note.message
+      }
+    } else {
+      // Insert new note
+      Notes.insert {
+        it[id] = note.id
+        it[title] = note.title
+        it[message] = note.message
+      }
     }
-        .let { Note(id = it[Notes.id], title = it[Notes.title], message = it[Notes.message]) }
+  
+    note
   }
+  
 
   suspend fun delete(id: UUID) {
     dbQuery { Notes.deleteWhere { Notes.id.eq(id) } }

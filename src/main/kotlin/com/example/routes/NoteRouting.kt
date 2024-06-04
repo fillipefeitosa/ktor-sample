@@ -1,4 +1,4 @@
-package com.example.modules
+package com.example.routes
 
 import com.example.models.toNoteResponse
 import com.example.requests.NoteRequest
@@ -19,7 +19,7 @@ fun Application.configureNoteRouting(service: NoteService) {
     }
     get("/notes/{id}") {
       val id = UUID.fromString(call.parameters["id"])
-      service.findById(id)?.let { note ->
+        service.findById(id)?.let { note ->
         val response = note.toNoteResponse()
         call.respond(HttpStatusCode.OK, response)
       }
